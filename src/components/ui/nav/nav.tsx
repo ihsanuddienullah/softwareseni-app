@@ -62,6 +62,12 @@ export const Nav: FC = () => {
         },
       ],
     },
+    {
+      itemIndex: 4,
+      text: 'Test',
+      iconId: 'defaultMenu',
+      callback: navigate(history, Routes.HOME),
+    },
   ]
 
   if (!connectIsDesktop) {

@@ -6,3 +6,7 @@ export const BASE_HEADERS = {
 export const URLS = {
   CONFIGURATION_APPOINTMENT_TYPES: '/configuration/appointmentTypes',
 }
+
+export const URLS_TEST = {
+  CONFIGURATION_APPOINTMENT_TYPES: '/properties',
+}
