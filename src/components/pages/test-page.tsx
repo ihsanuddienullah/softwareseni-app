@@ -5,18 +5,19 @@ import {
   BodyText,
   Button,
   ButtonGroup,
-  elMb6,
   elMb7,
+  elMb6,
   elSpan2,
   PersistantNotification,
   Table,
   Loader,
   useModal,
+  Input,
   //   StatusIndicator,
 } from '@reapit/elements'
 import { useReapitConnect } from '@reapit/connect-session'
 import { reapitConnectBrowserSession } from '../../core/connect-session'
-import { GetPropertiesApiService } from '../../platform-api/configuration-api'
+import { GetPropertiesApiService, UpdatePropertiesApiService } from '../../platform-api/configuration-api'
 import { ListItemModel } from '@reapit/foundations-ts-definitions'
 
 export const handleOnCloseModal =
@@ -25,10 +26,16 @@ export const handleOnCloseModal =
     closeModal()
   }
 
+interface EditAddress {
+  id: string
+  buildingName: string
+}
+
 export const TestPage: FC = () => {
   const { connectSession } = useReapitConnect(reapitConnectBrowserSession)
   const [indexExpandedRow, setIndexExpandedRow] = useState<number | null>(null)
   const [dataProperties, setDataProperties] = useState<ListItemModel[]>([])
+  const [editBuildingName, setEditBuildingName] = useState<EditAddress>({ id: '', buildingName: '' })
   const [loading, setLoading] = useState<boolean>(false)
   const { Modal, openModal, closeModal } = useModal()
 
@@ -106,11 +113,17 @@ export const TestPage: FC = () => {
     expandableContent: {
       content: (
         <>
-          <BodyText hasGreyText>
-            You may wish to put either calls to action or forms in here that relate to the selected table row.
-          </BodyText>
+          <BodyText hasGreyText>Open the modal to update the building name</BodyText>
           <ButtonGroup alignment="center">
-            <Button intent="primary" chevronRight type="submit" onClick={openModal}>
+            <Button
+              intent="primary"
+              chevronRight
+              type="submit"
+              onClick={() => {
+                openModal()
+                setEditBuildingName({ id: item.id, buildingName: item.address.buildingName })
+              }}
+            >
               Open Modal
             </Button>
           </ButtonGroup>
@@ -118,6 +131,8 @@ export const TestPage: FC = () => {
       ),
     },
   }))
+
+  const { buildingName, id } = editBuildingName
 
   return (
     <PageContainer>
@@ -135,169 +150,23 @@ export const TestPage: FC = () => {
             indexExpandedRow={indexExpandedRow}
             setIndexExpandedRow={setIndexExpandedRow}
             rows={dataRows}
-            // rows={[
-            //   {
-            //     cells: [
-            //       {
-            //         label: 'Building Name',
-            //         value: 'Mt Ash Jacket, Brassey Road',
-            //         className: elSpan2,
-            //         icon: 'homeSystem',
-            //         cellHasDarkText: true,
-            //         narrowTable: {
-            //           showLabel: true,
-            //         },
-            //       },
-            //       {
-            //         label: 'Customer',
-            //         value: 'Mr Johnny Corrigan',
-            //         icon: 'usernameSystem',
-            //         narrowTable: {
-            //           showLabel: false,
-            //         },
-            //       },
-            //       {
-            //         label: 'Client A/C',
-            //         value: 'Alternate Lettings Client Acc',
-            //         narrowTable: {
-            //           showLabel: true,
-            //         },
-            //       },
-            //       {
-            //         label: 'Description',
-            //         value: 'Tenant Payment Request',
-            //         narrowTable: {
-            //           showLabel: true,
-            //         },
-            //       },
-            //       {
-            //         label: 'Request Date',
-            //         value: '19 Apr 2021',
-            //         narrowTable: {
-            //           showLabel: true,
-            //         },
-            //       },
-            //       {
-            //         label: 'Amount',
-            //         value: '£50.00',
-            //         cellHasDarkText: true,
-            //         narrowTable: {
-            //           showLabel: true,
-            //         },
-            //       },
-            //       {
-            //         label: 'Payment Status',
-            //         value: 'Not Requested',
-            //         statusCircleIntent: 'danger',
-            //         narrowTable: {
-            //           showLabel: true,
-            //         },
-            //       },
-            //     ],
-            //     expandableContent: {
-            //       content: (
-            //         <>
-            //           <BodyText hasGreyText>
-            //             You may wish to put either calls to action or forms in here that relate to the selected table
-            //             row.
-            //           </BodyText>
-            //           <ButtonGroup alignment="center">
-            //             <Button intent="primary" chevronRight type="submit" onClick={openModal}>
-            //               Open Modal
-            //             </Button>
-            //           </ButtonGroup>
-            //         </>
-            //       ),
-            //     },
-            //   },
-            //   {
-            //     cells: [
-            //       {
-            //         label: 'Property',
-            //         value: 'Property Name, Road Name',
-            //         className: elSpan2,
-            //         icon: 'homeSystem',
-            //         cellHasDarkText: true,
-            //         narrowTable: {
-            //           showLabel: true,
-            //         },
-            //       },
-            //       {
-            //         label: 'Customer',
-            //         value: 'Mrs Davina Corrigan',
-            //         icon: 'usernameSystem',
-            //         narrowTable: {
-            //           showLabel: true,
-            //         },
-            //       },
-            //       {
-            //         label: 'Client A/C',
-            //         value: 'Alternate Lettings Client Acc',
-            //         narrowTable: {
-            //           showLabel: true,
-            //         },
-            //       },
-            //       {
-            //         label: 'Description',
-            //         value: 'Another descriptions',
-            //         narrowTable: {
-            //           showLabel: true,
-            //         },
-            //       },
-            //       {
-            //         label: 'Request Date',
-            //         value: '23rd Apr 2021',
-            //         narrowTable: {
-            //           showLabel: true,
-            //         },
-            //       },
-            //       {
-            //         label: 'Amount',
-            //         value: '£665.21',
-            //         cellHasDarkText: true,
-            //         narrowTable: {
-            //           showLabel: true,
-            //         },
-            //       },
-            //       {
-            //         label: 'Payment Status',
-            //         value: 'Pending',
-            //         children: (
-            //           <>
-            //             <StatusIndicator intent="critical" /> Pending
-            //           </>
-            //         ),
-            //         narrowTable: {
-            //           showLabel: true,
-            //         },
-            //       },
-            //     ],
-            //     expandableContent: {
-            //       content: (
-            //         <>
-            //           <BodyText hasGreyText>
-            //             You may wish to put either calls to action or forms in here that relate to the selected table
-            //             row.
-            //           </BodyText>
-            //           <ButtonGroup alignment="center">
-            //             <Button intent="primary" chevronRight type="submit" onClick={openModal}>
-            //               Open Modal
-            //             </Button>
-            //           </ButtonGroup>
-            //         </>
-            //       ),
-            //     },
-            //   },
-            // ]}
           />
-          <Modal title="Modal Opened">
+          <Modal title="Update Address">
             <PersistantNotification className={elMb6} isExpanded isInline isFullWidth intent="danger">
-              Closing me will collapse the table row
+              This form is not finisihed yet
             </PersistantNotification>
-            <BodyText hasGreyText>Typically Modals are used to confirm or deny things.</BodyText>
+            <Input
+              type="text"
+              placeholder="Update the building name"
+              style={{ width: '100%', marginBottom: '10px' }}
+              defaultValue={buildingName}
+            />
             <ButtonGroup alignment="center">
               <Button intent="secondary" onClick={handleOnCloseModal(setIndexExpandedRow, closeModal)}>
                 Close
+              </Button>
+              <Button intent="secondary" onClick={() => UpdatePropertiesApiService(connectSession, id, buildingName)}>
+                Submit
               </Button>
             </ButtonGroup>
           </Modal>
