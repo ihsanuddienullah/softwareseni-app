@@ -27,3 +27,32 @@ export const configurationAppointmentsApiService = async (
     console.error('Error fetching Configuration Appointment Types', error.message)
   }
 }
+
+export const GetPropertiesApiService = async (
+  session: ReapitConnectSession | null,
+): Promise<ListItemModel[] | undefined> => {
+  try {
+    if (!session) return
+
+    const response = await fetch(
+      `${window.reapit.config.platformApiUrl}${URLS.GET_PROPERTIES}?marketingMode=['selling']`,
+      {
+        method: 'GET',
+        headers: {
+          ...BASE_HEADERS,
+          Authorization: `Bearer ${session?.accessToken}`,
+        },
+      },
+    )
+
+    if (response.ok) {
+      const responseJson: Promise<ListItemModel[] | undefined> = response.json()
+      return responseJson
+    }
+
+    throw new Error('No response returned by API')
+  } catch (err) {
+    const error = err as Error
+    console.error('Error fetching Configuration Appointment Types', error.message)
+  }
+}
