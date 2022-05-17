@@ -9,10 +9,10 @@ import {
   elMb7,
   elSpan2,
   PersistantNotification,
-  StatusIndicator,
   Table,
   Loader,
   useModal,
+  //   StatusIndicator,
 } from '@reapit/elements'
 import { useReapitConnect } from '@reapit/connect-session'
 import { reapitConnectBrowserSession } from '../../core/connect-session'
@@ -47,7 +47,77 @@ export const TestPage: FC = () => {
     }
   }, [connectSession])
 
-  console.log(dataProperties)
+  const propertiesAddress = (dataProperties['_embedded'] || []).map((item) => ({
+    id: item.id,
+    address: item.address,
+    selling: item.selling,
+  }))
+
+  console.log(propertiesAddress)
+
+  const dataRows = (propertiesAddress || []).map((item) => ({
+    cells: [
+      {
+        label: 'Building Name',
+        value: item.address.buildingName,
+        className: elSpan2,
+        icon: 'homeSystem',
+        cellHasDarkText: true,
+        narrowTable: {
+          showLabel: true,
+        },
+      },
+      {
+        label: 'Building Number',
+        value: item.address.buildingNumber,
+        narrowTable: {
+          showLabel: true,
+        },
+      },
+      {
+        label: 'Post Code',
+        value: item.address.postcode,
+        narrowTable: {
+          showLabel: true,
+        },
+      },
+      {
+        label: 'Agency',
+        value: item.selling?.agency,
+        narrowTable: {
+          showLabel: true,
+        },
+      },
+      {
+        label: 'Price',
+        value: item.selling?.price,
+        narrowTable: {
+          showLabel: true,
+        },
+      },
+      {
+        label: 'Recommended Price',
+        value: item.selling?.recommendedPrice,
+        narrowTable: {
+          showLabel: true,
+        },
+      },
+    ],
+    expandableContent: {
+      content: (
+        <>
+          <BodyText hasGreyText>
+            You may wish to put either calls to action or forms in here that relate to the selected table row.
+          </BodyText>
+          <ButtonGroup alignment="center">
+            <Button intent="primary" chevronRight type="submit" onClick={openModal}>
+              Open Modal
+            </Button>
+          </ButtonGroup>
+        </>
+      ),
+    },
+  }))
 
   return (
     <PageContainer>
@@ -61,163 +131,164 @@ export const TestPage: FC = () => {
       ) : (
         <>
           <Table
-            numberColumns={9}
+            numberColumns={8}
             indexExpandedRow={indexExpandedRow}
             setIndexExpandedRow={setIndexExpandedRow}
-            rows={[
-              {
-                cells: [
-                  {
-                    label: 'Property',
-                    value: 'Mt Ash Jacket, Brassey Road',
-                    className: elSpan2,
-                    icon: 'homeSystem',
-                    cellHasDarkText: true,
-                    narrowTable: {
-                      showLabel: true,
-                    },
-                  },
-                  {
-                    label: 'Customer',
-                    value: 'Mr Johnny Corrigan',
-                    icon: 'usernameSystem',
-                    narrowTable: {
-                      showLabel: true,
-                    },
-                  },
-                  {
-                    label: 'Client A/C',
-                    value: 'Alternate Lettings Client Acc',
-                    narrowTable: {
-                      showLabel: true,
-                    },
-                  },
-                  {
-                    label: 'Description',
-                    value: 'Tenant Payment Request',
-                    narrowTable: {
-                      showLabel: true,
-                    },
-                  },
-                  {
-                    label: 'Request Date',
-                    value: '19 Apr 2021',
-                    narrowTable: {
-                      showLabel: true,
-                    },
-                  },
-                  {
-                    label: 'Amount',
-                    value: '£50.00',
-                    cellHasDarkText: true,
-                    narrowTable: {
-                      showLabel: true,
-                    },
-                  },
-                  {
-                    label: 'Payment Status',
-                    value: 'Not Requested',
-                    statusCircleIntent: 'danger',
-                    narrowTable: {
-                      showLabel: true,
-                    },
-                  },
-                ],
-                expandableContent: {
-                  content: (
-                    <>
-                      <BodyText hasGreyText>
-                        You may wish to put either calls to action or forms in here that relate to the selected table
-                        row.
-                      </BodyText>
-                      <ButtonGroup alignment="center">
-                        <Button intent="primary" chevronRight type="submit" onClick={openModal}>
-                          Open Modal
-                        </Button>
-                      </ButtonGroup>
-                    </>
-                  ),
-                },
-              },
-              {
-                cells: [
-                  {
-                    label: 'Property',
-                    value: 'Property Name, Road Name',
-                    className: elSpan2,
-                    icon: 'homeSystem',
-                    cellHasDarkText: true,
-                    narrowTable: {
-                      showLabel: true,
-                    },
-                  },
-                  {
-                    label: 'Customer',
-                    value: 'Mrs Davina Corrigan',
-                    icon: 'usernameSystem',
-                    narrowTable: {
-                      showLabel: true,
-                    },
-                  },
-                  {
-                    label: 'Client A/C',
-                    value: 'Alternate Lettings Client Acc',
-                    narrowTable: {
-                      showLabel: true,
-                    },
-                  },
-                  {
-                    label: 'Description',
-                    value: 'Another descriptions',
-                    narrowTable: {
-                      showLabel: true,
-                    },
-                  },
-                  {
-                    label: 'Request Date',
-                    value: '23rd Apr 2021',
-                    narrowTable: {
-                      showLabel: true,
-                    },
-                  },
-                  {
-                    label: 'Amount',
-                    value: '£665.21',
-                    cellHasDarkText: true,
-                    narrowTable: {
-                      showLabel: true,
-                    },
-                  },
-                  {
-                    label: 'Payment Status',
-                    value: 'Pending',
-                    children: (
-                      <>
-                        <StatusIndicator intent="critical" /> Pending
-                      </>
-                    ),
-                    narrowTable: {
-                      showLabel: true,
-                    },
-                  },
-                ],
-                expandableContent: {
-                  content: (
-                    <>
-                      <BodyText hasGreyText>
-                        You may wish to put either calls to action or forms in here that relate to the selected table
-                        row.
-                      </BodyText>
-                      <ButtonGroup alignment="center">
-                        <Button intent="primary" chevronRight type="submit" onClick={openModal}>
-                          Open Modal
-                        </Button>
-                      </ButtonGroup>
-                    </>
-                  ),
-                },
-              },
-            ]}
+            rows={dataRows}
+            // rows={[
+            //   {
+            //     cells: [
+            //       {
+            //         label: 'Building Name',
+            //         value: 'Mt Ash Jacket, Brassey Road',
+            //         className: elSpan2,
+            //         icon: 'homeSystem',
+            //         cellHasDarkText: true,
+            //         narrowTable: {
+            //           showLabel: true,
+            //         },
+            //       },
+            //       {
+            //         label: 'Customer',
+            //         value: 'Mr Johnny Corrigan',
+            //         icon: 'usernameSystem',
+            //         narrowTable: {
+            //           showLabel: false,
+            //         },
+            //       },
+            //       {
+            //         label: 'Client A/C',
+            //         value: 'Alternate Lettings Client Acc',
+            //         narrowTable: {
+            //           showLabel: true,
+            //         },
+            //       },
+            //       {
+            //         label: 'Description',
+            //         value: 'Tenant Payment Request',
+            //         narrowTable: {
+            //           showLabel: true,
+            //         },
+            //       },
+            //       {
+            //         label: 'Request Date',
+            //         value: '19 Apr 2021',
+            //         narrowTable: {
+            //           showLabel: true,
+            //         },
+            //       },
+            //       {
+            //         label: 'Amount',
+            //         value: '£50.00',
+            //         cellHasDarkText: true,
+            //         narrowTable: {
+            //           showLabel: true,
+            //         },
+            //       },
+            //       {
+            //         label: 'Payment Status',
+            //         value: 'Not Requested',
+            //         statusCircleIntent: 'danger',
+            //         narrowTable: {
+            //           showLabel: true,
+            //         },
+            //       },
+            //     ],
+            //     expandableContent: {
+            //       content: (
+            //         <>
+            //           <BodyText hasGreyText>
+            //             You may wish to put either calls to action or forms in here that relate to the selected table
+            //             row.
+            //           </BodyText>
+            //           <ButtonGroup alignment="center">
+            //             <Button intent="primary" chevronRight type="submit" onClick={openModal}>
+            //               Open Modal
+            //             </Button>
+            //           </ButtonGroup>
+            //         </>
+            //       ),
+            //     },
+            //   },
+            //   {
+            //     cells: [
+            //       {
+            //         label: 'Property',
+            //         value: 'Property Name, Road Name',
+            //         className: elSpan2,
+            //         icon: 'homeSystem',
+            //         cellHasDarkText: true,
+            //         narrowTable: {
+            //           showLabel: true,
+            //         },
+            //       },
+            //       {
+            //         label: 'Customer',
+            //         value: 'Mrs Davina Corrigan',
+            //         icon: 'usernameSystem',
+            //         narrowTable: {
+            //           showLabel: true,
+            //         },
+            //       },
+            //       {
+            //         label: 'Client A/C',
+            //         value: 'Alternate Lettings Client Acc',
+            //         narrowTable: {
+            //           showLabel: true,
+            //         },
+            //       },
+            //       {
+            //         label: 'Description',
+            //         value: 'Another descriptions',
+            //         narrowTable: {
+            //           showLabel: true,
+            //         },
+            //       },
+            //       {
+            //         label: 'Request Date',
+            //         value: '23rd Apr 2021',
+            //         narrowTable: {
+            //           showLabel: true,
+            //         },
+            //       },
+            //       {
+            //         label: 'Amount',
+            //         value: '£665.21',
+            //         cellHasDarkText: true,
+            //         narrowTable: {
+            //           showLabel: true,
+            //         },
+            //       },
+            //       {
+            //         label: 'Payment Status',
+            //         value: 'Pending',
+            //         children: (
+            //           <>
+            //             <StatusIndicator intent="critical" /> Pending
+            //           </>
+            //         ),
+            //         narrowTable: {
+            //           showLabel: true,
+            //         },
+            //       },
+            //     ],
+            //     expandableContent: {
+            //       content: (
+            //         <>
+            //           <BodyText hasGreyText>
+            //             You may wish to put either calls to action or forms in here that relate to the selected table
+            //             row.
+            //           </BodyText>
+            //           <ButtonGroup alignment="center">
+            //             <Button intent="primary" chevronRight type="submit" onClick={openModal}>
+            //               Open Modal
+            //             </Button>
+            //           </ButtonGroup>
+            //         </>
+            //       ),
+            //     },
+            //   },
+            // ]}
           />
           <Modal title="Modal Opened">
             <PersistantNotification className={elMb6} isExpanded isInline isFullWidth intent="danger">
