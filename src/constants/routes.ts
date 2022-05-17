@@ -5,4 +5,5 @@ export const Routes = {
   LIST: '/list',
   DATA: '/data',
   LOGIN: '/login',
+  TEST: '/test',
 }

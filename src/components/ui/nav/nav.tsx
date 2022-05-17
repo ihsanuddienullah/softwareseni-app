@@ -16,6 +16,8 @@ export const getDefaultNavIndex = (pathname: string) => {
     case Routes.LIST:
     case Routes.FORM:
       return 3
+    case Routes.TEST:
+      return 4
     default:
       return 0
   }
@@ -64,22 +66,22 @@ export const Nav: FC = () => {
     },
     {
       itemIndex: 4,
-      text: 'Test',
-      iconId: 'defaultMenu',
-      callback: navigate(history, Routes.HOME),
+      text: 'Technical Test',
+      iconId: 'resultsMenu',
+      callback: navigate(history, Routes.TEST),
     },
   ]
 
   if (!connectIsDesktop) {
     navOptions.push(
       {
-        itemIndex: 4,
+        itemIndex: 5,
         callback: () => (window.location.href = window.reapit.config.marketplaceUrl),
         iconId: 'appsMenu',
         text: 'Apps',
       },
       {
-        itemIndex: 5,
+        itemIndex: 6,
         callback: connectLogoutRedirect,
         isSecondary: true,
         iconId: 'logoutMenu',
