@@ -61,7 +61,7 @@ export const UpdatePropertiesApiService = async (
   eTag: string,
 ): Promise<ListItemModel[] | undefined> => {
   const formBody = {
-    address: address,
+    address,
   }
 
   try {

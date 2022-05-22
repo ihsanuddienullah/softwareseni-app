@@ -152,38 +152,52 @@ export const TestPage: FC = () => {
             rows={dataRows}
           />
           <Modal title="Update Address">
-            <Input
-              type="text"
-              placeholder="Update the building name"
-              style={{ width: '100%', marginBottom: '10px' }}
-              value={address.buildingName}
-              onChange={(e) =>
-                setEditAddress({ ...editAddress, address: { ...editAddress.address, buildingName: e.target.value } })
-              }
-              defaultValue={address.buildingName}
-            />
-            <Input
-              type="text"
-              placeholder="Update the building number"
-              style={{ width: '100%', marginBottom: '10px' }}
-              value={address.buildingNumber}
-              onChange={(e) =>
-                setEditAddress({ ...editAddress, address: { ...editAddress.address, buildingNumber: e.target.value } })
-              }
-              defaultValue={address.buildingNumber}
-            />
-            <Input
-              type="text"
-              placeholder="Update the post code"
-              style={{ width: '100%', marginBottom: '10px' }}
-              value={address.postcode}
-              onChange={(e) =>
-                setEditAddress({ ...editAddress, address: { ...editAddress.address, postcode: e.target.value } })
-              }
-              defaultValue={address.postcode}
-            />
+            <label>
+              <p style={{ fontWeight: 'bold' }}>Building Name</p>
+              <Input
+                type="text"
+                placeholder="Update the building name"
+                style={{ width: '100%', marginBottom: '10px' }}
+                value={address.buildingName}
+                onChange={(e) =>
+                  setEditAddress({ ...editAddress, address: { ...editAddress.address, buildingName: e.target.value } })
+                }
+                defaultValue={address.buildingName}
+              />
+            </label>
+            <label>
+              <p style={{ fontWeight: 'bold' }}>Building Number</p>
+              <Input
+                type="text"
+                placeholder="Update the building number"
+                style={{ width: '100%', marginBottom: '10px' }}
+                value={address.buildingNumber}
+                onChange={(e) =>
+                  setEditAddress({
+                    ...editAddress,
+                    address: { ...editAddress.address, buildingNumber: e.target.value },
+                  })
+                }
+                defaultValue={address.buildingNumber}
+                maxLength={8}
+              />
+            </label>
+            <label>
+              <p style={{ fontWeight: 'bold' }}>Post Code</p>
+              <Input
+                type="text"
+                placeholder="Update the post code"
+                style={{ width: '100%', marginBottom: '10px' }}
+                value={address.postcode}
+                onChange={(e) =>
+                  setEditAddress({ ...editAddress, address: { ...editAddress.address, postcode: e.target.value } })
+                }
+                defaultValue={address.postcode}
+                maxLength={9}
+              />
+            </label>
             <ButtonGroup alignment="center">
-              <Button intent="secondary" onClick={handleOnCloseModal(setIndexExpandedRow, closeModal)}>
+              <Button intent="low" onClick={handleOnCloseModal(setIndexExpandedRow, closeModal)}>
                 Close
               </Button>
               <Button
