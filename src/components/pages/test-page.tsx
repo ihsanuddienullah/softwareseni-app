@@ -6,7 +6,6 @@ import {
   Button,
   ButtonGroup,
   elMb7,
-  elMb6,
   elSpan2,
   PersistantNotification,
   Table,
@@ -28,15 +27,17 @@ export const handleOnCloseModal =
 
 interface EditAddress {
   id: string
-  buildingName: string
+  address: any
+  eTag: string
 }
 
 export const TestPage: FC = () => {
   const { connectSession } = useReapitConnect(reapitConnectBrowserSession)
   const [indexExpandedRow, setIndexExpandedRow] = useState<number | null>(null)
   const [dataProperties, setDataProperties] = useState<ListItemModel[]>([])
-  const [editBuildingName, setEditBuildingName] = useState<EditAddress>({ id: '', buildingName: '' })
+  const [editAddress, setEditAddress] = useState<EditAddress>({ id: '', address: {}, eTag: '' })
   const [loading, setLoading] = useState<boolean>(false)
+  const [refresh, setRefresh] = useState<boolean>(false)
   const { Modal, openModal, closeModal } = useModal()
 
   useEffect(() => {
@@ -52,15 +53,14 @@ export const TestPage: FC = () => {
     if (connectSession) {
       fetchProperties()
     }
-  }, [connectSession])
+  }, [connectSession, refresh])
 
   const propertiesAddress = (dataProperties['_embedded'] || []).map((item) => ({
     id: item.id,
     address: item.address,
     selling: item.selling,
+    eTag: item._eTag,
   }))
-
-  console.log(propertiesAddress)
 
   const dataRows = (propertiesAddress || []).map((item) => ({
     cells: [
@@ -113,7 +113,7 @@ export const TestPage: FC = () => {
     expandableContent: {
       content: (
         <>
-          <BodyText hasGreyText>Open the modal to update the building name</BodyText>
+          <BodyText hasGreyText>Open the modal to update the address</BodyText>
           <ButtonGroup alignment="center">
             <Button
               intent="primary"
@@ -121,7 +121,7 @@ export const TestPage: FC = () => {
               type="submit"
               onClick={() => {
                 openModal()
-                setEditBuildingName({ id: item.id, buildingName: item.address.buildingName })
+                setEditAddress({ id: item.id, address: item.address, eTag: item.eTag })
               }}
             >
               Open Modal
@@ -132,7 +132,7 @@ export const TestPage: FC = () => {
     },
   }))
 
-  const { buildingName, id } = editBuildingName
+  const { address, id, eTag } = editAddress
 
   return (
     <PageContainer>
@@ -152,20 +152,48 @@ export const TestPage: FC = () => {
             rows={dataRows}
           />
           <Modal title="Update Address">
-            <PersistantNotification className={elMb6} isExpanded isInline isFullWidth intent="danger">
-              This form is not finisihed yet
-            </PersistantNotification>
             <Input
               type="text"
               placeholder="Update the building name"
               style={{ width: '100%', marginBottom: '10px' }}
-              defaultValue={buildingName}
+              value={address.buildingName}
+              onChange={(e) =>
+                setEditAddress({ ...editAddress, address: { ...editAddress.address, buildingName: e.target.value } })
+              }
+              defaultValue={address.buildingName}
+            />
+            <Input
+              type="text"
+              placeholder="Update the building number"
+              style={{ width: '100%', marginBottom: '10px' }}
+              value={address.buildingNumber}
+              onChange={(e) =>
+                setEditAddress({ ...editAddress, address: { ...editAddress.address, buildingNumber: e.target.value } })
+              }
+              defaultValue={address.buildingNumber}
+            />
+            <Input
+              type="text"
+              placeholder="Update the post code"
+              style={{ width: '100%', marginBottom: '10px' }}
+              value={address.postcode}
+              onChange={(e) =>
+                setEditAddress({ ...editAddress, address: { ...editAddress.address, postcode: e.target.value } })
+              }
+              defaultValue={address.postcode}
             />
             <ButtonGroup alignment="center">
               <Button intent="secondary" onClick={handleOnCloseModal(setIndexExpandedRow, closeModal)}>
                 Close
               </Button>
-              <Button intent="secondary" onClick={() => UpdatePropertiesApiService(connectSession, id, buildingName)}>
+              <Button
+                intent="secondary"
+                onClick={() => {
+                  UpdatePropertiesApiService(connectSession, id, address, eTag)
+                  setRefresh(!refresh)
+                  closeModal()
+                }}
+              >
                 Submit
               </Button>
             </ButtonGroup>

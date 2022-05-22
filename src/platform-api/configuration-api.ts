@@ -57,22 +57,24 @@ export const GetPropertiesApiService = async (
 export const UpdatePropertiesApiService = async (
   session: ReapitConnectSession | null,
   id: string,
-  buildingName: string,
+  address: any,
+  eTag: string,
 ): Promise<ListItemModel[] | undefined> => {
-
-  const formBody = new URLSearchParams()
-  formBody.append('buildingName', buildingName)
+  const formBody = {
+    address: address,
+  }
 
   try {
     if (!session) return
-
     const response = await fetch(`${window.reapit.config.platformApiUrl}${URLS.PROPERTIES}/${id}`, {
       method: 'PATCH',
       headers: {
         ...BASE_HEADERS,
+        'If-Match': eTag,
         Authorization: `Bearer ${session?.accessToken}`,
+        'api-version': '2020-01-31',
       },
-      body: formBody,
+      body: JSON.stringify(formBody),
     })
 
     if (response.ok) {
